@@ -1,0 +1,111 @@
+---
+title: "NYC Subway OTP – Exploration"
+output: html_document
+date: "2025-12-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(janitor)
+```
+
+## Load Data
+
+```{r}
+otp <- readr::read_csv("../data/otp_clean.csv", show_col_types = FALSE) |>
+mutate(
+month_date = as.Date(month_date),
+day_type_label = case_when(
+day_type == 1 ~ "Weekday",
+day_type == 2 ~ "Weekend",
+TRUE ~ "Other"
+)
+)
+
+glimpse(otp)
+
+```
+## Basic sanity checks
+
+```{r}
+otp |>
+summarise(
+n = n(),
+min_date = min(month_date),
+max_date = max(month_date),
+n_lines  = n_distinct(line),
+n_div    = n_distinct(division)
+)
+
+otp |>
+count(day_type, day_type_label)
+
+otp |>
+count(line, sort = TRUE) |>
+head(20)
+
+```
+## Quick Summaries
+
+```{r}
+otp |>
+group_by(line) |>
+summarise(
+avg_otp = mean(otp_pct, na.rm = TRUE),
+sd_otp  = sd(otp_pct, na.rm = TRUE),
+n       = n()
+) |>
+arrange(avg_otp) |>
+head(15)
+
+```
+
+## Rough prototype plots
+
+### Histogram of OTP
+```{r}
+ggplot(otp, aes(x = otp_pct)) +
+geom_histogram(bins = 40) +
+labs(
+title = "Distribution of terminal on-time performance",
+x = "OTP (%)",
+y = "Count"
+)
+
+```
+
+### Time trend for one line (scratch)
+
+```{r}
+line_focus <- "R"   # change as you explore
+
+otp |>
+filter(line == line_focus, day_type_label == "Weekday") |>
+ggplot(aes(x = month_date, y = otp_pct)) +
+geom_line(alpha = 0.6) +
+labs(
+title = paste("Rough OTP trend – line", line_focus, "(Weekday)"),
+x = "Month",
+y = "OTP (%)"
+)
+
+```
+
+### Focusing on recent years only
+
+```{r}
+otp_recent <- otp |>
+filter(year(month_date) >= 2019, day_type_label == "Weekday")
+
+ggplot(otp_recent, aes(x = month_date, y = otp_pct, group = line, color = line)) +
+geom_line(alpha = 0.4) +
+labs(
+title = "Recent OTP trends by line (Weekdays, 2019+)",
+x = "Month",
+y = "OTP (%)"
+)
+
+```
+
