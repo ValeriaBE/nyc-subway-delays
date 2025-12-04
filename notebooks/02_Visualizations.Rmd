@@ -1,0 +1,156 @@
+---
+title: "NYC Subway Delays – Final Visualizations"
+output: html_document
+date: "2025-12-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 9,
+  fig.height = 5
+)
+
+library(tidyverse)
+library(lubridate)
+library(glue)
+```
+
+## 1. Load cleaned analysis data
+
+```{r}
+otp <- readr::read_csv("../data/otp_clean.csv", show_col_types = FALSE) |>
+mutate(
+month_date = as.Date(month_date),
+day_type_label = case_when(
+day_type == 1 ~ "Weekday",
+day_type == 2 ~ "Weekend",
+TRUE ~ "Other"
+)
+)
+
+otp_wkd <- otp |>
+filter(day_type_label == "Weekday")
+
+glimpse(otp_wkd)
+
+```
+
+## 2. Average OTP by line (Weekdays)
+
+```{r}
+avg_by_line <- otp_wkd |>
+group_by(line) |>
+summarise(
+avg_otp  = mean(otp_pct, na.rm = TRUE),
+n_months = n()
+) |>
+arrange(avg_otp)
+
+ggplot(avg_by_line, aes(x = avg_otp, y = reorder(line, avg_otp))) +
+geom_col() +
+labs(
+title = "Average weekday terminal on-time performance by line (2015–2024)",
+x = "On-time performance (%)",
+y = "Subway line"
+)
+
+```
+
+## 3. Time series for selected lines
+
+### 3.1 Helper vector of interesting lines
+
+```{r}
+interesting_lines <- avg_by_line |>
+head(5) |>
+pull(line)
+
+interesting_lines
+
+```
+
+### 3.2 Small-multiple time series (Weekdays)
+
+```{r}
+otp_wkd |>
+filter(line %in% interesting_lines) |>
+ggplot(aes(x = month_date, y = otp_pct)) +
+geom_line() +
+scale_x_date(
+date_breaks = "6 months",
+date_labels = "%b %Y"
+) +
+facet_wrap(~ line, ncol = 2) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+labs(
+title = "Weekday OTP over time – selected lines",
+x = "Month",
+y = "On-time performance (%)"
+)
+
+```
+
+## 4. Weekday vs Weekend comparison (example for one line)
+
+```{r}
+line_focus <- interesting_lines[1]
+
+otp |>
+filter(line == line_focus) |>
+ggplot(aes(x = month_date, y = otp_pct, color = day_type_label)) +
+geom_line(alpha = 0.7) +
+scale_x_date(
+date_breaks = "6 months",
+date_labels = "%b %Y"
+) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+labs(
+title = glue("Line {line_focus}: OTP by day type"),
+x = "Month",
+y = "On-time performance (%)",
+color = "Day type"
+)
+
+```
+
+## 5. Heatmap: line × month (Weekdays)
+
+```{r}
+ggplot(otp_wkd, aes(x = month_date, y = line, fill = otp_pct)) +
+geom_tile() +
+scale_x_date(
+date_breaks = "4 months",
+date_labels = "%b %y"
+) +
+labs(
+title = "NYC Subway weekday OTP by line and month",
+x = "Month",
+y = "Subway line",
+fill = "OTP (%)"
+) +
+theme_minimal() +
+theme(
+axis.text.x = element_text(angle = 45, hjust = 1)
+)
+
+
+```
+
+## 6. Export data for front-end (React/D3) app
+
+```{r}
+
+otp_for_viz <- otp_wkd |>
+select(
+line, division, day_type, day_type_label,
+month_date, year = year, period,
+otp_pct, on_time, scheduled
+)
+
+readr::write_csv(otp_for_viz, "../data/otp_for_viz.csv")
+
+```
+
+
