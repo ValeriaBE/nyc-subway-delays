@@ -1,0 +1,154 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+body{
+    color: white;
+    background-color: rgb(197 197 197 / 87%);
+}
+.app {
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color: #111;
+  background: #fff;
+}
+
+.story {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 26px 18px 80px;
+}
+
+.storyHeader h1 {
+  font-size: 2.1rem;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px 0;
+}
+
+.storyHeader p {
+  max-width: 70ch;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(0,0,0,0.72);
+  margin: 0 0 18px 0;
+}
+
+.storyGrid {
+  display: grid;
+  gap: 18px;
+  align-items: start;
+}
+
+.storyText {
+  padding-top: 6px;
+}
+  .storyViz .stickyViz {
+    position: relative;
+    top: 0;
+  }
+.vizCard {
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 18px;
+  padding: 16px 16px 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  background: #fff;
+}
+
+.vizCard h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 980px) {
+  .storyGrid {
+    grid-template-columns: 1fr;
+  }
+  .storyViz .stickyViz {
+    position: relative;
+    top: 0;
+  }
+}
+.story, .storyGrid, .storyViz, .stickyViz {
+  overflow: visible;
+}
+.storyViz {
+  min-height: 120vh; /* gives room for sticky behavior */
+}
+
+.stickyViz {
+  height: calc(100vh - 28px); /* sticky panel fits viewport */
+}
+.stepCard {
+  min-height: 80vh;              /* 🔥 critical */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 18px 16px;
+  margin: 0 0 18px 0;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: transparent;
+}
+
+.stepCard.active {
+  background: rgba(0,0,0,0.03);
+}
+
+/* --- Option B: each Step is a 2-column row --- */
+.stepRow {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr; /* text | viz */
+  gap: 18px;
+  align-items: start;
+  margin: 0 0 22px 0;
+}
+
+/* Make the text card feel like a proper "step" */
+.stepCard {
+  min-height: 80vh;               /* important for scroll pacing */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 18px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: transparent;
+}
+
+.stepCard.active {
+  background: rgba(0,0,0,0.03);
+}
+
+/* Ensure the viz card uses the column width */
+.vizCard {
+  width: 100%;
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 18px;
+  padding: 16px 16px 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  background: #fff;
+}
+
+/* Optional: keep the viz "sticky" PER step (nice feel) */
+@media (min-width: 981px) {
+  .vizCard {
+    position: sticky;
+    top: 14px;
+  }
+}
+
+/* Mobile: stack */
+@media (max-width: 980px) {
+  .stepRow {
+    grid-template-columns: 1fr;
+  }
+  .vizCard {
+    position: relative;
+    top: 0;
+  }
+}
+
