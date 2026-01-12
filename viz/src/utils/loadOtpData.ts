@@ -16,7 +16,8 @@ interface OtpRowRaw {
 }
 
 export async function loadOtpData(): Promise<OtpRow[]> {
-  const rows = await d3.csv<OtpRowRaw>("/data/otp_for_viz.csv");
+  const url = `${import.meta.env.BASE_URL}data/otp_for_viz.csv`;
+  const rows = await d3.csv<OtpRowRaw>(url);
   return rows
     .filter((d) => d.line && d.month_date && d.otp_pct)
     .filter((d) => QUEENS_LINES.includes(d.line as any)) // keep only R/7/M/F/E
