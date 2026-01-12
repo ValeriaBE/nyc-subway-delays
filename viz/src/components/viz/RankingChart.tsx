@@ -45,7 +45,7 @@ export function RankingChart({
 
   return (
     <div style={{ display: "grid", gap: 10 }}>
-      <svg width={width} height={height}>
+      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: "100%", height: "auto", display: "block" }}>
         {stats.map((d) => {
           const y0 = y(d.line) ?? 0;
           const isHighlight = highlightLine === d.line;

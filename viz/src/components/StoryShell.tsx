@@ -223,42 +223,7 @@ export function StoryShell({ data }: { data: OtpRow[] }) {
         </Step>
 
         {/* OUTRO */}
-        <Step data={"outro"}>
-          <div className="stepRow">
-            <div className={`stepCard ${scene === "outro" ? "active" : ""}`}>
-              <h3>Takeaway</h3>
-              <p>
-                The line with the best average isn’t always the one that feels
-                best day-to-day. “Usually reliable” can still mean “sometimes
-                catastrophic.”
-              </p>
-              <ul style={{ lineHeight: 1.7, color: "rgba(0,0,0,0.75)" }}>
-                <li>
-                  Next: compute <b>volatility</b> (how unpredictable each line is)
-                </li>
-                <li>
-                  Next: count <b>bad months</b> (e.g., months below 75% OTP)
-                </li>
-                <li>
-                  Add annotations for notable dips
-                </li>
-              </ul>
-            </div>
-
-            <motion.div
-              className="vizCard"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35 }}
-            >
-              <h2>What we’ll add next</h2>
-              <p style={{ marginTop: 6, color: "rgba(0,0,0,0.72)", lineHeight: 1.6 }}>
-                Volatility + bad-month frequency will make your story match how
-                the commute feels: mostly fine, occasionally brutal.
-              </p>
-            </motion.div>
-          </div>
-        </Step>
+        
       </Scrollama>
     </div>
   );

@@ -86,7 +86,7 @@ export function TimelineSmallMultiples({
 
   return (
     <div style={{ display: "grid", gap: 12 }}>
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+      <div className="bulletRow">
         {QUEENS_LINES.map((l) => (
           <button
             key={l}
@@ -108,7 +108,7 @@ export function TimelineSmallMultiples({
         ))}
       </div>
 
-      <svg width={width} height={height}>
+      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: "100%", height: "auto", display: "block" }}>
         <defs>
           <clipPath id={clipId}>
             <rect

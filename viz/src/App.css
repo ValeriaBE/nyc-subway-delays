@@ -1,25 +1,38 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* -----------------------------
+   GLOBAL BASE
+------------------------------ */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
 }
-body{
-    color: white;
-    background-color: rgb(197 197 197 / 87%);
-}
+
 .app {
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-  color: #111;
   background: #fff;
+  color: #111;
 }
 
 .story {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 26px 18px 80px;
+  max-width: none;          /* allow full width */
+  margin: 0;
+  padding: 26px 50px 80px;
+}
+.storyHeader{
+  text-align: center;
+}
+.storyHeader p{
+  display: inline-block;
 }
 
+/* Make SVGs responsive by default if you use viewBox + width:100% styles */
+svg {
+  max-width: 100%;
+}
+
+/* -----------------------------
+   HEADER
+------------------------------ */
 .storyHeader h1 {
   font-size: 2.1rem;
   letter-spacing: -0.02em;
@@ -34,70 +47,9 @@ body{
   margin: 0 0 18px 0;
 }
 
-.storyGrid {
-  display: grid;
-  gap: 18px;
-  align-items: start;
-}
-
-.storyText {
-  padding-top: 6px;
-}
-  .storyViz .stickyViz {
-    position: relative;
-    top: 0;
-  }
-.vizCard {
-  border: 1px solid rgba(0,0,0,0.10);
-  border-radius: 18px;
-  padding: 16px 16px 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  background: #fff;
-}
-
-.vizCard h2 {
-  margin: 0 0 10px 0;
-  font-size: 1.05rem;
-  letter-spacing: -0.01em;
-}
-
-@media (max-width: 980px) {
-  .storyGrid {
-    grid-template-columns: 1fr;
-  }
-  .storyViz .stickyViz {
-    position: relative;
-    top: 0;
-  }
-}
-.story, .storyGrid, .storyViz, .stickyViz {
-  overflow: visible;
-}
-.storyViz {
-  min-height: 120vh; /* gives room for sticky behavior */
-}
-
-.stickyViz {
-  height: calc(100vh - 28px); /* sticky panel fits viewport */
-}
-.stepCard {
-  min-height: 80vh;              /* 🔥 critical */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  padding: 18px 16px;
-  margin: 0 0 18px 0;
-  border-radius: 14px;
-  border: 1px solid rgba(0,0,0,0.08);
-  background: transparent;
-}
-
-.stepCard.active {
-  background: rgba(0,0,0,0.03);
-}
-
-/* --- Option B: each Step is a 2-column row --- */
+/* -----------------------------
+   OPTION B STEP LAYOUT (DESKTOP)
+------------------------------ */
 .stepRow {
   display: grid;
   grid-template-columns: 1fr 1.2fr; /* text | viz */
@@ -106,9 +58,8 @@ body{
   margin: 0 0 22px 0;
 }
 
-/* Make the text card feel like a proper "step" */
 .stepCard {
-  min-height: 80vh;               /* important for scroll pacing */
+  min-height: 80vh;               /* scroll pacing */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -123,7 +74,6 @@ body{
   background: rgba(0,0,0,0.03);
 }
 
-/* Ensure the viz card uses the column width */
 .vizCard {
   width: 100%;
   border: 1px solid rgba(0,0,0,0.10);
@@ -133,7 +83,7 @@ body{
   background: #fff;
 }
 
-/* Optional: keep the viz "sticky" PER step (nice feel) */
+/* Optional: sticky chart per-step on large screens only */
 @media (min-width: 981px) {
   .vizCard {
     position: sticky;
@@ -141,14 +91,102 @@ body{
   }
 }
 
-/* Mobile: stack */
+/* -----------------------------
+   CONTROLS / BUTTON ROWS
+------------------------------ */
+.bulletRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+button {
+  font: inherit;
+}
+
+/* -----------------------------
+   MOBILE (<= 980px)
+------------------------------ */
 @media (max-width: 980px) {
+  .story {
+    padding: 18px 14px 64px;
+  }
+
+  .storyHeader h1 {
+    font-size: 1.6rem;
+    line-height: 1.15;
+  }
+
+  .storyHeader p {
+    font-size: 0.95rem;
+  }
+
+  /* stack text + viz */
   .stepRow {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
+
+  /* steps should not be 80vh on mobile or it feels endless */
+  .stepCard {
+    min-height: auto;
+    padding: 14px 12px;
+  }
+
+  .vizCard {
+    padding: 12px 12px 8px;
+    border-radius: 16px;
+  }
+
+  /* turn off sticky on mobile */
   .vizCard {
     position: relative;
     top: 0;
   }
+
+  /* make charts readable */
+  .vizCard h2 {
+    font-size: 1rem;
+    margin: 0 0 8px 0;
+  }
+
+  /* buttons/tap targets */
+  .bulletRow {
+    gap: 8px;
+  }
+
+  .bulletRow button {
+    padding: 8px 10px;
+  }
+
+  /* improve legibility */
+  .stepCard p,
+  .vizCard p,
+  .stepCard li {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
 }
 
+/* -----------------------------
+   SMALL MOBILE (<= 420px)
+------------------------------ */
+@media (max-width: 420px) {
+  .storyHeader h1 {
+    font-size: 1.45rem;
+  }
+
+  .story {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .vizCard {
+    border-radius: 14px;
+  }
+
+  .bulletRow button {
+    padding: 7px 9px;
+  }
+}
